@@ -19,7 +19,7 @@
       @keyframes pulse { 0%,100%{transform:scale(1);opacity:.12} 50%{transform:scale(1.15);opacity:.2} }
 
       /* Madeira Holiday Look (Dark) */
-      .holiday { background:url('https://i.imgur.com/eoJfBJt.jpeg') center/cover no-repeat; border-color:rgba(255,217,102,.7)!important; position:relative; overflow:hidden; color:white; }
+      .holiday { background:url('https://i.imgur.com/v1FBRup.jpeg') center/cover no-repeat; border-color:rgba(255,217,102,.7)!important; position:relative; overflow:hidden; color:white; }
       .holiday::before { content:""; position:absolute; inset:0; background:rgba(0,0,0,.55); }
       .holiday>*{ position:relative; z-index:1; }
 
@@ -160,10 +160,12 @@
       /* lokales Fallback speichert jetzt {checks, notes} zusammen */
       const STORAGE_KEY = "kalender-data-2026-07-12_2026-07-25";
 
+      const localData = readLocal();
+
       let clickLock = false;
-      let checks = {};
-      let notes  = {};
-      let remoteReady = false;
+      let checks = localData.checks;
+      let notes  = localData.notes;
+      let remoteReady = true;
 
       const $ = (s,r=document)=>r.querySelector(s);
       const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
@@ -201,27 +203,36 @@
       function writeLocal(){ localStorage.setItem(STORAGE_KEY, JSON.stringify({ checks, notes })); }
 
       /* ----- Laden/Speichern inkl. notes ----- */
-      async function loadRemote(){
-        try{
-          const r = await fetch(API_URL, { headers: { 'Accept':'application/json' }, cache:'no-store' });
-          if(!r.ok) throw new Error(`HTTP ${r.status}`);
-          const data = await r.json();
-          checks = data.checks || {};
-          notes  = data.notes  || {};
-          writeLocal();
-        }catch(e){
-          console.warn('API nicht erreichbar – nutze lokale Kopie.', e);
-          const local = readLocal();
-          checks = local.checks;
-          notes  = local.notes;
-        }finally{
-          remoteReady = true;
-          render();
-        }
-      }
-      setInterval(() => {
-        loadRemote();
-      }, 10000);
+async function loadRemote() {
+  try {
+    const r = await fetch(API_URL, {
+      headers: { "Accept": "application/json" },
+      cache: "no-store"
+    });
+
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+
+    const data = await r.json();
+    checks = data.checks || {};
+    notes = data.notes || {};
+    writeLocal();
+  } catch (e) {
+    console.warn("API nicht erreichbar – nutze lokale Kopie.", e);
+
+    const local = readLocal();
+    checks = local.checks;
+    notes = local.notes;
+  } finally {
+    remoteReady = true;
+    render();
+  }
+}
+
+// Sofort laden
+loadRemote();
+
+// Danach einmal pro Minute synchronisieren
+setInterval(loadRemote, 60000);
 
       const save = debounce(async ()=>{
         writeLocal();
