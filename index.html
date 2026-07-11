@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kalender 02.10.25 bis 15.10.25</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Effekte & Animationen */
+      .shimmer { position:absolute; inset:-2px; border-radius:16px; pointer-events:none; background:linear-gradient(90deg,transparent,rgba(16,185,129,.2),transparent); transform:translateX(-120%); animation:slide 1.2s ease-out forwards; }
+      @keyframes slide { to { transform: translateX(120%); } }
+      .tick-enter { transform: scale(.6); opacity: 0; }
+      .tick-enter-active { transform: scale(1); opacity: 1; transition: transform 350ms ease, opacity 350ms ease; }
+      .bar { transition: width 700ms cubic-bezier(.2,.8,.2,1); }
+      .hearts::before { content:"❤️💖❤️"; position:absolute; top:-10px; right:-10px; font-size:1.2rem; animation:float 2s infinite ease-in-out; z-index:50; }
+      @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+      .heart-bg { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; z-index:0; }
+      .heart-bg span { font-size:3rem; line-height:1; color:rgba(255,192,203,0.12); animation:pulse 3s infinite ease-in-out; }
+      @keyframes pulse { 0%,100%{transform:scale(1);opacity:.12} 50%{transform:scale(1.15);opacity:.2} }
+
+      /* Madeira Holiday Look (Dark) */
+      .holiday { background:url('https://i.imgur.com/BwsS4O1.jpeg') center/cover no-repeat; border-color:rgba(255,217,102,.7)!important; position:relative; overflow:hidden; color:white; }
+      .holiday::before { content:""; position:absolute; inset:0; background:rgba(0,0,0,.55); }
+      .holiday>*{ position:relative; z-index:1; }
+
+      /* Theme Light – Basis */
+      body.theme-light { color:#0f172a; }
+      body.theme-light.bg-gradient { background:linear-gradient(to bottom,#ffffff,#f8fafc,#eef2f7); }
+      body.theme-light .info-card{ background:rgba(255,255,255,0.9)!important; border-color:#e2e8f0!important; color:#0f172a; }
+      body.theme-light .progress-track{ background:#e2e8f0!important; }
+      body.theme-light .bar{ background:#10b981!important; }
+      body.theme-light .day{ border-color:#e2e8f0!important; color:#0f172a; }
+      body.theme-light .day:hover{ box-shadow:0 10px 24px rgba(15,23,42,0.08); }
+      body.theme-light .day .date-label{ color:#64748b!important; }
+      body.theme-light .day .date-value{ color:#0f172a!important; }
+      /* Light Mode: Hearts */
+      body.theme-light .hearts{ background:rgba(251,207,232,.9)!important; border-color:#f472b6!important; }
+
+      /* Seitenverlauf (Dark) */
+      .bg-gradient{ background-image:linear-gradient(to bottom,#0f172a,#0b1324,#000000); }
+
+      /* Notebook Feature */
+      .nb-card-host { position: relative; }
+      .nb-book-btn {
+        position: absolute; top: 67px; right: 8px; width: 28px; height: 28px;
+        border-radius: 9999px; display:flex; align-items:center; justify-content:center;
+        font-size:16px; line-height:1; background: rgba(0,0,0,.6); color:#fff;
+        border:1px solid rgba(255,255,255,.25); opacity:0; transform:translateY(-4px);
+        transition: opacity .2s, transform .2s, background .2s; z-index: 3; cursor:pointer; backdrop-filter: blur(4px);
+      }
+      .nb-card-host:hover > .nb-book-btn { opacity:1; transform:translateY(0); }
+      .nb-book-btn:hover { background: rgba(0,0,0,.75); }
+
+      /* Modal: Scroll-fähig */
+      .nb-modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; align-items:center; justify-content:center; z-index:1000; overflow:auto; padding:16px; overscroll-behavior: contain; }
+      .nb-modal-backdrop.is-open { display:flex; }
+      .nb-modal { width:min(680px,92vw); max-height:92vh; background:var(--nb-surface,#111); color:var(--nb-text,#fff); border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.08); overflow:hidden; display:grid; grid-template-rows:auto 1fr; }
+      .nb-modal-header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.08); }
+      .nb-modal-title { font-weight:700; font-size:16px; }
+      .nb-modal-actions { display:flex; gap:8px; }
+      .nb-btn { appearance:none; border:1px solid rgba(255,255,255,.18); padding:8px 12px; border-radius:10px; cursor:pointer; background:rgba(255,255,255,.06); color:inherit; transition:transform .15s, background .15s; }
+      .nb-btn:hover { background:rgba(255,255,255,.12); }
+      .nb-btn:active { transform: translateY(1px) scale(.99); }
+      .nb-btn.primary { background:#4f46e5; border-color:#4f46e5; color:#fff; }
+      .nb-btn.danger { background:#dc2626; border-color:#dc2626; color:#fff; }
+      .nb-modal-body { display:grid; gap:10px; grid-template-rows:auto 1fr; padding:14px 16px; overflow:auto; min-height:0; -webkit-overflow-scrolling: touch; }
+      .nb-form-row { display:grid; gap:10px; grid-template-columns:1fr; }
+      .nb-textarea { width:100%; min-height:160px; border-radius:12px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.04); color:inherit; padding:10px 12px; resize:vertical; }
+      .nb-helper { font-size:12px; opacity:.8; }
+      .nb-preview { border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.03); border-radius:12px; padding:12px; min-height:100px; }
+      /* Vorschau-Feinschliff für neue Markups */
+      .nb-preview u { text-underline-offset: 2px; text-decoration-thickness: 2px; }
+      .nb-preview del { opacity: .95; }
+
+      /* Light Theme für Modal */
+      body.theme-light .nb-modal { --nb-surface:#fff; --nb-text:#111; border:1px solid rgba(0,0,0,.08); }
+      body.theme-light .nb-btn { border-color:rgba(0,0,0,.12); background:rgba(0,0,0,.04); }
+      body.theme-light .nb-btn:hover { background:rgba(0,0,0,.08); }
+      body.theme-light .nb-textarea { border-color:rgba(0,0,0,.14); background:rgba(0,0,0,.03); }
+      body.theme-light .nb-preview { border-color:rgba(0,0,0,.10); background:rgba(0,0,0,.02); }
+
+      /* ===== Light-Mode Notice + Holiday sichtbar ===== */
+      body.theme-light .notice{
+        background:#d1fae5 !important;   /* emerald-100 */
+        border-color:#10b981 !important;  /* emerald-500 */
+        color:#065f46 !important;         /* emerald-900 */
+      }
+      body.theme-light .day:not(.holiday):not(.hearts){
+        background:rgba(255,255,255,0.95) !important;
+        border-color:#e5e7eb !important;
+        color:#0f172a;
+      }
+      body.theme-light .day:not(.holiday):not(.hearts):hover{
+        box-shadow:0 10px 24px rgba(15,23,42,0.10);
+      }
+      body.theme-light .day.holiday{
+        background:url('https://i.imgur.com/BwsS4O1.jpeg') center/cover no-repeat !important;
+        background-color:transparent !important;
+        border-color:rgba(251,191,36,.70) !important;
+        color:#1a1a1a;
+        box-shadow:0 12px 30px rgba(251,191,36,.25);
+      }
+      body.theme-light .day.holiday::before{
+        content:""; position:absolute; inset:0; background:rgba(255,255,200,.35);
+      }
+      body.theme-light .day.holiday .date-label{ color:#b45309!important; }
+      body.theme-light .day.holiday .date-value{ color:#1f2937!important; }
+      body.theme-light .day.holiday .mt-3{ color:#f59e0b!important; }
+    </style>
+  </head>
+  <body class="min-h-screen w-full bg-gradient text-slate-100 p-6">
+    <div class="max-w-3xl mx-auto" id="app"></div>
+
+    <!-- Notebook Modal -->
+    <div id="nb-modal-root" class="nb-modal-backdrop" aria-hidden="true">
+      <div class="nb-modal" role="dialog" aria-modal="true" aria-labelledby="nb-modal-title">
+        <div class="nb-modal-header">
+          <div id="nb-modal-title" class="nb-modal-title">Notiz</div>
+          <div class="nb-modal-actions">
+            <button type="button" class="nb-btn danger" id="nb-clear">Löschen</button>
+            <button type="button" class="nb-btn" id="nb-cancel">Schließen</button>
+            <button type="button" class="nb-btn primary" id="nb-save">Speichern</button>
+          </div>
+        </div>
+        <div class="nb-modal-body">
+          <div class="nb-form-row">
+            <textarea id="nb-text" class="nb-textarea" placeholder="Schreibe deine Notiz..."></textarea>
+            <div class="nb-helper">
+              Unterstützt: _kursiv_, **fett**, __unterstrichen__, ~~durchgestrichen~~. Zeilenumbrüche werden übernommen.
+            </div>
+          </div>
+          <div>
+            <div class="nb-helper" style="margin-bottom:6px">Vorschau</div>
+            <div id="nb-preview" class="nb-preview"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      /* ====== Zeitzone: Bonus-Wechselfunktion ====== */
+      const TZ_LABELS = {
+        "Europe/Berlin": "Deutschland",
+        "Europe/Berlin": "Österreich",
+        "Europe/Berlin": "Italien",
+        "Asia/Tokyo": "Tokyo",
+      };
+      let TZ = localStorage.getItem("tz") || "Atlantic/Madeira";
+      function setTZ(tz){
+        TZ = tz;
+        localStorage.setItem("tz", tz);
+        render();
+      }
+
+      const START = "2026-07-12";
+      const END = "2026-07-25";
+
+      /* zentrale API (bei gleicher Vercel-Domain so lassen) */
+      const API_URL = "/api/checks";
+      /* lokales Fallback speichert jetzt {checks, notes} zusammen */
+      const STORAGE_KEY = "kalender-data-2025-10-02_2025-10-15";
+
+      let clickLock = false;
+      let checks = {};
+      let notes  = {};
+      let remoteReady = false;
+
+      const $ = (s,r=document)=>r.querySelector(s);
+      const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
+      const debounce=(fn,ms=250)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);}};
+      const pad = (n)=>String(n).padStart(2,'0');
+
+      function formatDateInTZ(date,tz){
+        const parts=new Intl.DateTimeFormat("de-DE",{timeZone:tz,year:"numeric",month:"2-digit",day:"2-digit"})
+          .formatToParts(date).reduce((a,p)=>(a[p.type]=p.value,a),{});
+        return `${parts.year}-${parts.month}-${parts.day}`;
+      }
+      function toParts(iso){const[y,m,d]=iso.split("-").map(Number);return{y,m,d};}
+      function makeDate(y,m,d){return new Date(Date.UTC(y,m-1,d));}
+      function daysBetween(a,b){const ap=toParts(a),bp=toParts(b);return Math.round((makeDate(bp.y,bp.m,bp.d)-makeDate(ap.y,ap.m,ap.d))/(1000*60*60*24));}
+      function range(start,end){const s=toParts(start),total=daysBetween(start,end)+1,out=[];for(let i=0;i<total;i++){const d=makeDate(s.y,s.m,s.d+i);out.push(`${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`);}return out;}
+      function display(iso){const{y,m,d}=toParts(iso);return `${pad(d)}.${pad(m)}.${y}`;}
+
+      const allDays=range(START,END); let todayIso=formatDateInTZ(new Date(),TZ);
+
+      /* Theme */
+      let theme=localStorage.getItem('theme')||'dark';
+      function applyTheme(){ document.body.classList.toggle('theme-light', theme==='light'); }
+      applyTheme();
+
+      /* ----- Local helpers (checks+notes zusammen) ----- */
+      function readLocal(){
+        try{
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if(!raw) return { checks:{}, notes:{} };
+          const parsed = JSON.parse(raw);
+          if (parsed && !parsed.checks && !parsed.notes) return { checks: parsed || {}, notes:{} }; // legacy
+          return { checks: parsed.checks || {}, notes: parsed.notes || {} };
+        }catch{ return { checks:{}, notes:{} }; }
+      }
+      function writeLocal(){ localStorage.setItem(STORAGE_KEY, JSON.stringify({ checks, notes })); }
+
+      /* ----- Laden/Speichern inkl. notes ----- */
+      async function loadRemote(){
+        try{
+          const r = await fetch(API_URL, { headers: { 'Accept':'application/json' }, cache:'no-store' });
+          if(!r.ok) throw new Error(`HTTP ${r.status}`);
+          const data = await r.json();
+          checks = data.checks || {};
+          notes  = data.notes  || {};
+          writeLocal();
+        }catch(e){
+          console.warn('API nicht erreichbar – nutze lokale Kopie.', e);
+          const local = readLocal();
+          checks = local.checks;
+          notes  = local.notes;
+        }finally{
+          remoteReady = true;
+          render();
+        }
+      }
+      setInterval(() => {
+        loadRemote();
+      }, 10000);
+
+      const save = debounce(async ()=>{
+        writeLocal();
+        try{
+          await fetch(API_URL, {
+            method:'PUT',
+            headers:{ 'Content-Type':'application/json' },
+            body: JSON.stringify({ checks, notes })
+          });
+        }catch(e){ console.error('Remote save failed', e); }
+      }, 200);
+
+      /* Notebook / Modal */
+      const nbRoot = document.getElementById('nb-modal-root');
+      const nbText = document.getElementById('nb-text');
+      const nbPreview = document.getElementById('nb-preview');
+      const nbBtnSave = document.getElementById('nb-save');
+      const nbBtnCancel = document.getElementById('nb-cancel');
+      const nbBtnClear = document.getElementById('nb-clear');
+      const nbTitle = document.getElementById('nb-modal-title');
+      let nbCurrentDay = null;
+
+      function mdLite(str){
+        if(!str) return "";
+        const esc = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+        let out = esc(str);
+
+        // zuerst: Unterstreichen & Durchstreichen
+        out = out.replace(/__([^_]+?)__/g, '<u>$1</u>');      // __Text__  -> underline
+        out = out.replace(/~~([^~]+?)~~/g, '<del>$1</del>');  // ~~Text~~  -> strike
+
+        // dann: Fett
+        out = out.replace(/\*\*([^*]+?)\*\*/g, '<strong>$1</strong>');
+
+        // zuletzt: Kursiv
+        out = out.replace(/(^|[^*])\*([^*]+?)\*(?!\*)/g, '$1<em>$2</em>'); // *Text*
+        out = out.replace(/_([^_]+?)_/g, '<em>$1</em>');                   // _Text_
+
+        // Zeilenumbrüche
+        out = out.replace(/\n/g, '<br>');
+        return out;
+      }
+
+      function openModal(day){
+        nbCurrentDay = day;
+        nbTitle.textContent = `Notiz – ${display(day)}`;
+        const existing = notes[day] || '';
+        nbText.value = existing;
+        nbPreview.innerHTML = mdLite(existing);
+        nbRoot.classList.add('is-open');
+        nbRoot.setAttribute('aria-hidden','false');
+        nbText.focus();
+      }
+      function closeModal(){
+        nbRoot.classList.remove('is-open');
+        nbRoot.setAttribute('aria-hidden','true');
+        nbCurrentDay = null;
+      }
+      nbText.addEventListener('input', ()=>{ nbPreview.innerHTML = mdLite(nbText.value); });
+      nbBtnSave.addEventListener('click', ()=>{
+        if(!nbCurrentDay) return;
+        const val = nbText.value.trim();
+        if (val) notes[nbCurrentDay] = val; else delete notes[nbCurrentDay];
+        save(); closeModal();
+      });
+      nbBtnCancel.addEventListener('click', closeModal);
+      nbBtnClear.addEventListener('click', ()=>{
+        if(!nbCurrentDay) return;
+        if(confirm('Notiz wirklich löschen?')){
+          delete notes[nbCurrentDay];
+          save();
+          nbText.value=''; nbPreview.innerHTML='';
+          closeModal();
+        }
+      });
+      nbRoot.addEventListener('click', (e)=>{ if(e.target===nbRoot) closeModal(); });
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && nbRoot.classList.contains('is-open')) closeModal(); });
+
+      function isReached(dateStr){ return dateStr <= todayIso; }
+
+      function attachNotebookButtons(){
+        $$('.day').forEach(card=>{
+          card.classList.add('nb-card-host');
+          const old = card.querySelector('.nb-book-btn');
+          if(old) old.remove();
+
+          const day = card.dataset.day;
+          if(!isReached(day)) return; // Buch nur bei erreichten Tagen
+
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'nb-book-btn';
+          btn.title = 'Notiz öffnen';
+          btn.textContent = '📖';
+          btn.addEventListener('click', (e)=>{ e.stopPropagation(); openModal(day); });
+          card.appendChild(btn);
+        });
+      }
+
+      /* Render */
+      function infoCard(title,value,sub){
+        return `<div class="info-card rounded-2xl bg-slate-900/60 backdrop-blur border border-slate-800 p-4 shadow-xl">
+          <div class="text-sm text-slate-400">${title}</div>
+          <div class="text-2xl font-semibold mt-1">${value}</div>
+          ${sub?`<div class="text-xs text-slate-500 mt-1">${sub}</div>`:''}
+        </div>`;
+      }
+
+      function dayCard(day,{disabled,checked,isLimit}){
+        const isSpecial = day==="2025-10-07";
+        const isHoliday = day >= START && day <= END;
+        return `<button data-day="${day}" data-disabled="${disabled}"
+          class="day relative rounded-2xl border p-4 text-left transition w-full
+          ${isSpecial ? 'hearts bg-pink-900/40 border-pink-500/60' : (isHoliday ? 'holiday' : 'bg-slate-900/60')}
+          backdrop-blur shadow-xl
+          ${checked ? (isSpecial ? 'border-pink-400/80' : (isHoliday ? 'border-yellow-300/60' : 'border-emerald-400/60')) : 'border-slate-800'}
+          ${disabled ? 'opacity-60 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-2xl'}">
+
+          ${isSpecial?'<div class="heart-bg"><span>❤</span></div>':''}
+          ${isLimit?'<div class="pointer-events-none absolute inset-0 rounded-2xl ring-2 ring-emerald-400/60"></div>':''}
+
+          <div class="relative z-10 flex items-center justify-between">
+            <div>
+              <div class="text-xs date-label ${isHoliday ? 'text-yellow-100' : 'text-slate-400'}">Datum</div>
+              <div class="text-lg font-medium date-value ${isHoliday ? 'text-white' : ''}">${display(day)}</div>
+            </div>
+            <span class="inline-flex items-center justify-center h-8 w-8 rounded-xl border
+              ${checked ? (isSpecial ? 'bg-pink-400/20 border-pink-400' : (isHoliday ? 'bg-yellow-300/20 border-yellow-300' : 'bg-emerald-400/20 border-emerald-400')) : 'border-slate-700'}">
+              ${checked ? (isSpecial ? heartIcon() : checkIcon()) : dot()}
+            </span>
+          </div>
+
+          ${!disabled ? `<div class="mt-3 text-xs ${isHoliday ? 'text-yellow-100' : 'text-emerald-300/80'}">Klicke zum Abhaken</div>` : ''}
+        </button>`;
+      }
+
+      function checkIcon(){ 
+        return `<svg class="tick h-5 w-5" viewBox="0 0 24 24" fill="none" 
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6L9 17l-5-5"/></svg>`; 
+      }
+      function heartIcon(){ 
+        return `<svg class="tick text-pink-400" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" preserveAspectRatio="xMidYMid meet" style="display:block;margin:auto">
+          <path d="M12.1 21.35L10.7 20.03C5.4 15.36 2 12.28 2 8.5 2 5.46 4.46 3 7.5 3c2.04 0 3.81 1.12 4.6 2.77C12.89 4.12 14.66 3 16.7 3 19.74 3 22.2 5.46 22.2 8.5c0 3.78-3.4 6.86-8.65 11.54l-1.45 1.31z"/></svg>`; 
+      }
+      function dot(){ return '<span class="block h-2 w-2 rounded-full opacity-60"></span>'; }
+
+      function render(){
+        if(!remoteReady){
+          $('#app').innerHTML='<div class="p-10 text-center text-slate-300">Lade Fortschritt…</div>';
+          return;
+        }
+
+        const tzLabel = TZ_LABELS[TZ] || TZ;
+        todayIso = formatDateInTZ(new Date(),TZ);
+        const lastCheckable=allDays.filter(d=>d<=todayIso).slice(-1)[0]??allDays[0];
+        const canCheckUntil=lastCheckable<END?lastCheckable:END;
+        const remainingToEnd=Math.max(0,daysBetween(todayIso,END));
+        const doneCount=allDays.filter(d=>checks[d]).length;
+        const openCount=allDays.length-doneCount;
+        const progress=Math.round((doneCount/allDays.length)*100);
+
+        $('#app').innerHTML=`
+          <header class="mb-6 flex items-center justify-between">
+            <div>
+              <h1 class="text-3xl md:text-4xl font-semibold tracking-tight">Zeitplan</h1>
+              <p class="text-slate-300 mt-1">02.10.2025 bis 15.10.2025</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <select id="tz-select" class="rounded-2xl px-3 py-2 bg-slate-800/60 hover:bg-slate-800 shadow-lg shadow-slate-900/40 border border-slate-700 text-slate-100">
+                <option value="Europe/Berlin">Deutschland</option>
+                <option value="Europe/Berlin">Österreich</option>
+                <option value="Europe/Berlin">Italien</option>
+                <option value="Asia/Tokyo">Tokyo</option>
+              </select>
+              <button id="theme" class="rounded-2xl px-3 py-2 bg-slate-800/60 hover:bg-slate-800 shadow-lg shadow-slate-900/40 transition" title="Theme wechseln">🌙/☀️</button>
+              <button id="reset" class="rounded-2xl px-4 py-2 bg-slate-800/60 hover:bg-slate-800 shadow-lg shadow-slate-900/40 transition">Zurücksetzen</button>
+            </div>
+          </header>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            ${infoCard('Heute', display(todayIso), 'Zeitzone: ' + tzLabel)}
+            ${infoCard('Noch bis 15.10.', `${remainingToEnd} Tage`, 'inkl. heute gezählt')}
+            ${infoCard('Fortschritt', `${progress}%`, `${doneCount} geschafft · ${openCount} offen`)}
+          </div>
+
+          <!-- Notice (grün im Dark Mode; im Light Mode via CSS oben) -->
+          <div class="notice mb-4 rounded-2xl border border-emerald-500/30 bg-emerald-400/10 p-4 flex items-center gap-3">
+            <div class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></div>
+            <p class="text-emerald-200">Du kannst bis einschließlich <span class="font-medium text-emerald-300">${display(canCheckUntil)}</span> abhaken.</p>
+          </div>
+
+          <div class="mb-6">
+            <div class="h-3 rounded-full progress-track bg-slate-800 overflow-hidden">
+              <div class="h-full bg-emerald-400 bar" style="width:${progress}%"></div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            ${allDays.map(day=>dayCard(day,{disabled:day>todayIso,checked:!!checks[day],isLimit:day===canCheckUntil})).join('')}
+          </div>
+
+          <footer class="mt-10 text-slate-400 text-sm"><p>Hinweis: Fortschritt & Notizen werden zentral gespeichert.</p></footer>
+        `;
+
+        // Controls
+        const tzSel = document.getElementById('tz-select');
+        if (tzSel) {
+          tzSel.value = TZ;
+          tzSel.addEventListener('change', (e)=> setTZ(e.target.value));
+        }
+
+        document.getElementById('reset').addEventListener('click', ()=>{ 
+          if(confirm('Alles zurücksetzen?')){ checks={}; notes={}; save(); render(); } 
+        });
+        document.getElementById('theme').addEventListener('click', ()=>{ 
+          theme = (theme==='light'?'dark':'light'); 
+          localStorage.setItem('theme',theme); 
+          applyTheme(); 
+        });
+
+        $$('.day').forEach(el=>{
+          el.addEventListener('click', ()=>{
+            const day=el.dataset.day; 
+            if(el.dataset.disabled==='true') return; 
+            if(clickLock) return;
+            const willCheck=!checks[day]; 
+            if(willCheck){checks[day]=true;} else {delete checks[day];}
+            save();
+            if(willCheck){ 
+              const s=document.createElement('div'); 
+              s.className='shimmer'; 
+              el.appendChild(s); 
+              const tick=el.querySelector('.tick'); 
+              if(tick){ tick.classList.add('tick-enter'); requestAnimationFrame(()=>tick.classList.add('tick-enter-active')); } 
+              clickLock=true; setTimeout(()=>{clickLock=false; render();},400); 
+            } else { 
+              clickLock=true; setTimeout(()=>{clickLock=false; render();},200); 
+            }
+          });
+        });
+
+        attachNotebookButtons();
+      }
+
+      render();
+      setInterval(()=>{ const t=formatDateInTZ(new Date(),TZ); if(t!==todayIso){ render(); } },60000);
+    </script>
+  </body>
+</html>
+
