@@ -1,64 +1,59 @@
-// api/checks.js — Serverless API auf Vercel
+import { Redis } from "@upstash/redis";
+
+const redis = new Redis({
+  url:
+    process.env.UPSTASH_REDIS_REST_URL ||
+    process.env.KV_REST_API_URL,
+
+  token:
+    process.env.UPSTASH_REDIS_REST_TOKEN ||
+    process.env.KV_REST_API_TOKEN,
+});
+
+const STORAGE_KEY = "holiday-calendar-2026";
+
 export default async function handler(req, res) {
-  const { GITHUB_TOKEN, GITHUB_REPO, GITHUB_FILE } = process.env;
-  const BRANCH = "main"; // ggf. anpassen
-  const base = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`;
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
 
-  const gh = (url, opts = {}) =>
-    fetch(url, {
-      ...opts,
-      headers: {
-        Authorization: `Bearer ${GITHUB_TOKEN}`,
-        Accept: "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-        ...(opts.headers || {}),
-      },
-    });
+  try {
+    if (req.method === "GET") {
+      const savedData = await redis.get(STORAGE_KEY);
 
-  if (req.method === "GET") {
-    const r = await gh(`${base}?ref=${BRANCH}`);
-    if (r.status === 404) return res.status(200).json({ checks: {}, notes: {} });
-    const data = await r.json();
-    const decoded = Buffer.from(data.content, "base64").toString("utf8");
-    return res.status(200).json(JSON.parse(decoded));
-  }
-
-  async function readBody(req) {
-    return await new Promise((resolve) => {
-      let body = "";
-      req.on("data", (c) => (body += c));
-      req.on("end", () => resolve(body));
-    });
-  }
-
-  if (req.method === "PUT") {
-    const raw = await readBody(req);
-    const { checks = {}, notes = {} } = JSON.parse(raw || "{}");
-
-    let sha;
-    const meta = await gh(`${base}?ref=${BRANCH}`);
-    if (meta.ok) {
-      const m = await meta.json();
-      sha = m.sha;
+      return res.status(200).json(
+        savedData || {
+          checks: {},
+          notes: {},
+        }
+      );
     }
 
-    const content = Buffer.from(
-      JSON.stringify({ checks, notes }, null, 2)
-    ).toString("base64");
+    if (req.method === "PUT") {
+      const body =
+        typeof req.body === "string"
+          ? JSON.parse(req.body)
+          : req.body;
 
-    await gh(base, {
-      method: "PUT",
-      body: JSON.stringify({
-        message: "Update checks+notes.json",
-        content,
-        branch: BRANCH,
-        sha,
-      }),
+      const data = {
+        checks: body?.checks || {},
+        notes: body?.notes || {},
+      };
+
+      await redis.set(STORAGE_KEY, data);
+
+      return res.status(200).json({
+        success: true,
+        data,
+      });
+    }
+
+    return res.status(405).json({
+      error: "Methode nicht erlaubt",
     });
+  } catch (error) {
+    console.error("Speicherfehler:", error);
 
-    return res.status(200).json({ ok: true });
+    return res.status(500).json({
+      error: "Daten konnten nicht gespeichert werden",
+    });
   }
-
-  res.setHeader("Allow", "GET, PUT");
-  res.status(405).end("Method Not Allowed");
 }
