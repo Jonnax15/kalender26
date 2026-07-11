@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Kalender 02.10.25 bis 15.10.25</title>
+    <title>Tagebuch</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       /* Effekte & Animationen */
@@ -141,8 +141,8 @@
       /* ====== Zeitzone: Bonus-Wechselfunktion ====== */
       const TZ_LABELS = {
         "Europe/Berlin": "Deutschland",
-        "Europe/Berlin": "Österreich",
-        "Europe/Berlin": "Italien",
+        "Europe/Vienna": "Österreich",
+        "Europe/Rome": "Italien",
         "Asia/Tokyo": "Tokyo",
       };
       let TZ = localStorage.getItem("tz") || "Atlantic/Madeira";
@@ -152,7 +152,7 @@
         render();
       }
 
-      const START = "2026-07-12";
+      const START = "2026-07-11";
       const END = "2026-07-25";
 
       /* zentrale API (bei gleicher Vercel-Domain so lassen) */
@@ -331,8 +331,8 @@
       }
 
       function dayCard(day,{disabled,checked,isLimit}){
-        const isSpecial = day==="2025-10-07";
-        const isHoliday = day >= START && day <= END;
+        const isSpecial = day==="2026-07-25";
+        const isHoliday = day >= "2026-07-12" && day <= "2026-07-25" && day !== "2026-07-25";
         return `<button data-day="${day}" data-disabled="${disabled}"
           class="day relative rounded-2xl border p-4 text-left transition w-full
           ${isSpecial ? 'hearts bg-pink-900/40 border-pink-500/60' : (isHoliday ? 'holiday' : 'bg-slate-900/60')}
@@ -387,14 +387,14 @@
         $('#app').innerHTML=`
           <header class="mb-6 flex items-center justify-between">
             <div>
-              <h1 class="text-3xl md:text-4xl font-semibold tracking-tight">Zeitplan</h1>
-              <p class="text-slate-300 mt-1">02.10.2025 bis 15.10.2025</p>
+              <h1 class="text-3xl md:text-4xl font-semibold tracking-tight">Tagebuch</h1>
+              <p class="text-slate-300 mt-1">12.7.2026 bis 25.07.2026</p>
             </div>
             <div class="flex items-center gap-2">
               <select id="tz-select" class="rounded-2xl px-3 py-2 bg-slate-800/60 hover:bg-slate-800 shadow-lg shadow-slate-900/40 border border-slate-700 text-slate-100">
                 <option value="Europe/Berlin">Deutschland</option>
-                <option value="Europe/Berlin">Österreich</option>
-                <option value="Europe/Berlin">Italien</option>
+                <option value="Europe/Vienna">Österreich</option>
+                <option value="Europe/Rome">Italien</option>
                 <option value="Asia/Tokyo">Tokyo</option>
               </select>
               <button id="theme" class="rounded-2xl px-3 py-2 bg-slate-800/60 hover:bg-slate-800 shadow-lg shadow-slate-900/40 transition" title="Theme wechseln">🌙/☀️</button>
@@ -404,7 +404,7 @@
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             ${infoCard('Heute', display(todayIso), 'Zeitzone: ' + tzLabel)}
-            ${infoCard('Noch bis 15.10.', `${remainingToEnd} Tage`, 'inkl. heute gezählt')}
+            ${infoCard('Noch bis 25.7.', `${remainingToEnd} Tage`, 'inkl. heute gezählt')}
             ${infoCard('Fortschritt', `${progress}%`, `${doneCount} geschafft · ${openCount} offen`)}
           </div>
 
