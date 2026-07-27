@@ -345,9 +345,11 @@ setInterval(loadRemote, 60000);
       }
 
       function dayCard(day,{disabled,checked,isLimit}){
-        const isSpecial = day==="2026-07-25";
-        const isSpecial = day==="2026-07-31";
-        const isHoliday = day >= "2026-07-12" && day <= "2026-07-25" && day !== "2026-07-25";
+        const isSpecial = day === "2026-07-25" || day === "2026-07-31";
+        const isHoliday = 
+          day >= "2026-07-12" && 
+          day <= "2026-07-25" && 
+          day !== "2026-07-25";
         return `<button data-day="${day}" data-disabled="${disabled}"
           class="day relative rounded-2xl border p-4 text-left transition w-full
           ${isSpecial ? 'hearts bg-pink-900/40 border-pink-500/60' : (isHoliday ? 'holiday' : 'bg-slate-900/60')}
