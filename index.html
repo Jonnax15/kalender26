@@ -121,7 +121,6 @@
         <div class="nb-modal-header">
           <div id="nb-modal-title" class="nb-modal-title">Notiz</div>
           <div class="nb-modal-actions">
-            <button type="button" class="nb-btn danger" id="nb-clear"></button>
             <button type="button" class="nb-btn" id="nb-cancel">Schließen</button>
             <button type="button" class="nb-btn primary" id="nb-save">Speichern</button>
           </div>
@@ -254,7 +253,6 @@ setInterval(loadRemote, 60000);
       const nbPreview = document.getElementById('nb-preview');
       const nbBtnSave = document.getElementById('nb-save');
       const nbBtnCancel = document.getElementById('nb-cancel');
-      const nbBtnClear = document.getElementById('nb-clear');
       const nbTitle = document.getElementById('nb-modal-title');
       let nbCurrentDay = null;
 
@@ -302,15 +300,6 @@ setInterval(loadRemote, 60000);
         save(); closeModal();
       });
       nbBtnCancel.addEventListener('click', closeModal);
-      nbBtnClear.addEventListener('click', ()=>{
-        if(!nbCurrentDay) return;
-        if(confirm('Notiz wirklich löschen?')){
-          delete notes[nbCurrentDay];
-          save();
-          nbText.value=''; nbPreview.innerHTML='';
-          closeModal();
-        }
-      });
       nbRoot.addEventListener('click', (e)=>{ if(e.target===nbRoot) closeModal(); });
       document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && nbRoot.classList.contains('is-open')) closeModal(); });
 
