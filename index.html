@@ -26,6 +26,26 @@
       .holiday { background:url('https://i.imgur.com/v1FBRup.jpeg') center/cover no-repeat; border-color:rgba(255,217,102,.7)!important; position:relative; overflow:hidden; color:white; }
       .holiday::before { content:""; position:absolute; inset:0; background:rgba(0,0,0,.55); }
       .holiday>*{ position:relative; z-index:1; }
+      
+      .holiday-second {
+  background: url('DEIN-NEUES-BILD') center/cover no-repeat;
+  border-color: rgba(255,217,102,.7) !important;
+  position: relative;
+  overflow: hidden;
+  color: white;
+}
+
+.holiday-second::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+}
+
+.holiday-second > * {
+  position: relative;
+  z-index: 1;
+}
 
       /* Theme Light – Basis */
       body.theme-light { color:#0f172a; }
@@ -333,19 +353,30 @@ setInterval(loadRemote, 60000);
       }
 
       function dayCard(day,{disabled,checked,isLimit}){
-        const isSpecial = day === "2026-07-25" || day === "2026-07-31";
-        const isHoliday =
-  (
+        function dayCard(day,{disabled,checked,isLimit}){
+  const isSpecial =
+    day === "2026-07-25" ||
+    day === "2026-07-31";
+
+  const isHolidayFirst =
     day >= "2026-07-12" &&
-    day <= "2026-07-24"
-  ) ||
-  (
+    day <= "2026-07-24";
+
+  const isHolidaySecond =
     day >= "2026-07-27" &&
-    day <= "2026-07-30"
+    day <= "2026-07-30";
+    
+  const isHoliday = isHolidayFirst || isHolidaySecond;
   );
         return `<button data-day="${day}" data-disabled="${disabled}"
           class="day relative rounded-2xl border p-4 text-left transition w-full
-          ${isSpecial ? 'hearts bg-pink-900/40 border-pink-500/60' : (isHoliday ? 'holiday' : 'bg-slate-900/60')}
+          ${isSpecial
+  ? 'hearts bg-pink-900/40 border-pink-500/60'
+  : isHolidayFirst
+    ? 'holiday'
+    : isHolidaySecond
+      ? 'holiday-second'
+      : 'bg-slate-900/60'
           backdrop-blur shadow-xl
           ${checked ? (isSpecial ? 'border-pink-400/80' : (isHoliday ? 'border-yellow-300/60' : 'border-emerald-400/60')) : 'border-slate-800'}
           ${disabled ? 'opacity-60 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-2xl'}">
