@@ -333,7 +333,7 @@ setInterval(loadRemote, 60000);
         </div>`;
       }
 
-      function dayCard(day,{disabled,checked,isLimit}){
+function dayCard(day, { disabled, checked, isLimit }) {
   const isSpecial =
     day === "2026-07-25" ||
     day === "2026-07-31";
@@ -348,31 +348,90 @@ setInterval(loadRemote, 60000);
       day <= "2026-07-30"
     );
 
-  return `<button data-day="${day}" data-disabled="${disabled}"
-        return `<button data-day="${day}" data-disabled="${disabled}"
-          class="day relative rounded-2xl border p-4 text-left transition w-
-          ${isSpecial ? 'hearts bg-pink-900/40 border-pink-500/60' : (isHoliday ? 'holiday' : 'bg-slate-900/60')}
-          backdrop-blur shadow-xl
-          ${checked ? (isSpecial ? 'border-pink-400/80' : (isHoliday ? 'border-yellow-300/60' : 'border-emerald-400/60')) : 'border-slate-800'}
-          ${disabled ? 'opacity-60 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-2xl'}">
+  return `
+    <button
+      data-day="${day}"
+      data-disabled="${disabled}"
+      class="day relative rounded-2xl border p-4 text-left transition w-full
+        ${
+          isSpecial
+            ? "hearts bg-pink-900/40 border-pink-500/60"
+            : isHoliday
+              ? "holiday"
+              : "bg-slate-900/60"
+        }
+        backdrop-blur shadow-xl
+        ${
+          checked
+            ? isSpecial
+              ? "border-pink-400/80"
+              : isHoliday
+                ? "border-yellow-300/60"
+                : "border-emerald-400/60"
+            : "border-slate-800"
+        }
+        ${
+          disabled
+            ? "opacity-60 cursor-not-allowed"
+            : "hover:-translate-y-0.5 hover:shadow-2xl"
+        }"
+    >
+      ${
+        isSpecial
+          ? '<div class="heart-bg"><span>❤</span></div>'
+          : ""
+      }
 
-          ${isSpecial?'<div class="heart-bg"><span>❤</span></div>':''}
-          ${isLimit?'<div class="pointer-events-none absolute inset-0 rounded-2xl ring-2 ring-emerald-400/60"></div>':''}
+      ${
+        isLimit
+          ? '<div class="pointer-events-none absolute inset-0 rounded-2xl ring-2 ring-emerald-400/60"></div>'
+          : ""
+      }
 
-          <div class="relative z-10 flex items-center justify-between">
-            <div>
-              <div class="text-xs date-label ${isHoliday ? 'text-yellow-100' : 'text-slate-400'}">Datum</div>
-              <div class="text-lg font-medium date-value ${isHoliday ? 'text-white' : ''}">${display(day)}</div>
-            </div>
-            <span class="inline-flex items-center justify-center h-8 w-8 rounded-xl border
-              ${checked ? (isSpecial ? 'bg-pink-400/20 border-pink-400' : (isHoliday ? 'bg-yellow-300/20 border-yellow-300' : 'bg-emerald-400/20 border-emerald-400')) : 'border-slate-700'}">
-              ${checked ? (isSpecial ? heartIcon() : checkIcon()) : dot()}
-            </span>
+      <div class="relative z-10 flex items-center justify-between">
+        <div>
+          <div class="text-xs date-label ${
+            isHoliday ? "text-yellow-100" : "text-slate-400"
+          }">
+            Datum
           </div>
 
-          ${!disabled ? `<div class="mt-3 text-xs ${isHoliday ? 'text-yellow-100' : 'text-emerald-300/80'}">Klicke zum Abhaken</div>` : ''}
-        </button>`;
+          <div class="text-lg font-medium date-value ${
+            isHoliday ? "text-white" : ""
+          }">
+            ${display(day)}
+          </div>
+        </div>
+
+        <span class="inline-flex items-center justify-center h-8 w-8 rounded-xl border
+          ${
+            checked
+              ? isSpecial
+                ? "bg-pink-400/20 border-pink-400"
+                : isHoliday
+                  ? "bg-yellow-300/20 border-yellow-300"
+                  : "bg-emerald-400/20 border-emerald-400"
+              : "border-slate-700"
+          }"
+        >
+          ${checked ? (isSpecial ? heartIcon() : checkIcon()) : dot()}
+        </span>
+      </div>
+
+      ${
+        !disabled
+          ? `
+            <div class="mt-3 text-xs ${
+              isHoliday ? "text-yellow-100" : "text-emerald-300/80"
+            }">
+              Klicke zum Abhaken
+            </div>
+          `
+          : ""
       }
+    </button>
+  `;
+}
 
       function checkIcon(){ 
         return `<svg class="tick h-5 w-5" viewBox="0 0 24 24" fill="none" 
