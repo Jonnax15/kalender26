@@ -398,7 +398,7 @@ setInterval(loadRemote, 60000);
           <header class="mb-6 flex items-center justify-between">
             <div>
               <h1 class="text-3xl md:text-4xl font-semibold tracking-tight">Tagebuch</h1>
-              <p class="text-slate-300 mt-1">12.7.2026 bis 25.07.2026</p>
+              <p class="text-slate-300 mt-1">12.7.2026 bis 31.07.2026</p>
             </div>
             <div class="flex items-center gap-2">
               <select id="tz-select" class="rounded-2xl px-3 py-2 bg-slate-800/60 hover:bg-slate-800 shadow-lg shadow-slate-900/40 border border-slate-700 text-slate-100">
@@ -411,7 +411,7 @@ setInterval(loadRemote, 60000);
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             ${infoCard('Heute', display(todayIso), 'Zeitzone: ' + tzLabel)}
-            ${infoCard('Noch bis 25.7.', `${remainingToEnd} Tage`, 'inkl. heute gezählt')}
+            ${infoCard('Noch bis 31.7.', `${remainingToEnd} Tage`, 'inkl. heute gezählt')}
             ${infoCard('Fortschritt', `${progress}%`, `${doneCount} geschafft · ${openCount} offen`)}
           </div>
 
