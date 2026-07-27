@@ -144,8 +144,7 @@
       /* ====== Zeitzone: Bonus-Wechselfunktion ====== */
       const TZ_LABELS = {
         "Europe/Berlin": "Deutschland",
-        "Europe/Vienna": "Österreich",
-        "Europe/Rome": "Italien",
+        "Europe/Warsaw": "Polen",
       };
       let TZ = localStorage.getItem("tz") || "Atlantic/Madeira";
       function setTZ(tz){
@@ -404,8 +403,7 @@ setInterval(loadRemote, 60000);
             <div class="flex items-center gap-2">
               <select id="tz-select" class="rounded-2xl px-3 py-2 bg-slate-800/60 hover:bg-slate-800 shadow-lg shadow-slate-900/40 border border-slate-700 text-slate-100">
                 <option value="Europe/Berlin">Deutschland</option>
-                <option value="Europe/Vienna">Österreich</option>
-                <option value="Europe/Rome">Italien</option>
+                <option value="Europe/Warsaw">Polen</option>
               </select>
               <button id="theme" class="rounded-2xl px-3 py-2 bg-slate-800/60 hover:bg-slate-800 shadow-lg shadow-slate-900/40 transition" title="Theme wechseln">🌙/☀️</button>
             </div>
