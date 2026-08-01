@@ -22,10 +22,14 @@
       .heart-bg span { font-size:3rem; line-height:1; color:rgba(255,192,203,0.12); animation:pulse 3s infinite ease-in-out; }
       @keyframes pulse { 0%,100%{transform:scale(1);opacity:.12} 50%{transform:scale(1.15);opacity:.2} }
 
-      /* Madeira Holiday Look (Dark) */
+      /*  Holiday Look (Dark) */
       .holiday { background:url('https://i.imgur.com/v1FBRup.jpeg') center/cover no-repeat; border-color:rgba(255,217,102,.7)!important; position:relative; overflow:hidden; color:white; }
       .holiday::before { content:""; position:absolute; inset:0; background:rgba(0,0,0,.55); }
       .holiday>*{ position:relative; z-index:1; }
+
+      .holiday2 { background:url('https://i.imgur.com/J4Lfq95.jpeg') center/cover no-repeat; border-color:rgba(255,217,102,.7)!important; position:relative; overflow:hidden; color:white; }
+      .holiday2::before { content:""; position:absolute; inset:0; background:rgba(0,0,0,.55); }
+      .holiday2>*{ position:relative; z-index:1; }
       
 
       /* Seitenverlauf (Dark) */
@@ -290,7 +294,9 @@ function dayCard(day, { disabled, checked, isLimit }) {
     (
       day >= "2026-07-12" &&
       day <= "2026-07-24"
-    ) ||
+    );
+
+ const isHoliday2 =
     (
       day >= "2026-07-27" &&
       day <= "2026-07-31"
