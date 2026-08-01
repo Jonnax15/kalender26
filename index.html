@@ -28,19 +28,6 @@
       .holiday>*{ position:relative; z-index:1; }
       
 
-      /* Theme Light – Basis */
-      body.theme-light { color:#0f172a; }
-      body.theme-light.bg-gradient { background:linear-gradient(to bottom,#ffffff,#f8fafc,#eef2f7); }
-      body.theme-light .info-card{ background:rgba(255,255,255,0.9)!important; border-color:#e2e8f0!important; color:#0f172a; }
-      body.theme-light .progress-track{ background:#e2e8f0!important; }
-      body.theme-light .bar{ background:#10b981!important; }
-      body.theme-light .day{ border-color:#e2e8f0!important; color:#0f172a; }
-      body.theme-light .day:hover{ box-shadow:0 10px 24px rgba(15,23,42,0.08); }
-      body.theme-light .day .date-label{ color:#64748b!important; }
-      body.theme-light .day .date-value{ color:#0f172a!important; }
-      /* Light Mode: Hearts */
-      body.theme-light .hearts{ background:rgba(251,207,232,.9)!important; border-color:#f472b6!important; }
-
       /* Seitenverlauf (Dark) */
       .bg-gradient{ background-image:linear-gradient(to bottom,#0f172a,#0b1324,#000000); }
 
@@ -77,40 +64,6 @@
       .nb-preview u { text-underline-offset: 2px; text-decoration-thickness: 2px; }
       .nb-preview del { opacity: .95; }
 
-      /* Light Theme für Modal */
-      body.theme-light .nb-modal { --nb-surface:#fff; --nb-text:#111; border:1px solid rgba(0,0,0,.08); }
-      body.theme-light .nb-btn { border-color:rgba(0,0,0,.12); background:rgba(0,0,0,.04); }
-      body.theme-light .nb-btn:hover { background:rgba(0,0,0,.08); }
-      body.theme-light .nb-textarea { border-color:rgba(0,0,0,.14); background:rgba(0,0,0,.03); }
-      body.theme-light .nb-preview { border-color:rgba(0,0,0,.10); background:rgba(0,0,0,.02); }
-
-      /* ===== Light-Mode Notice + Holiday sichtbar ===== */
-      body.theme-light .notice{
-        background:#d1fae5 !important;   /* emerald-100 */
-        border-color:#10b981 !important;  /* emerald-500 */
-        color:#065f46 !important;         /* emerald-900 */
-      }
-      body.theme-light .day:not(.holiday):not(.hearts){
-        background:rgba(255,255,255,0.95) !important;
-        border-color:#e5e7eb !important;
-        color:#0f172a;
-      }
-      body.theme-light .day:not(.holiday):not(.hearts):hover{
-        box-shadow:0 10px 24px rgba(15,23,42,0.10);
-      }
-      body.theme-light .day.holiday{
-        background:url('https://i.imgur.com/BwsS4O1.jpeg') center/cover no-repeat !important;
-        background-color:transparent !important;
-        border-color:rgba(251,191,36,.70) !important;
-        color:#1a1a1a;
-        box-shadow:0 12px 30px rgba(251,191,36,.25);
-      }
-      body.theme-light .day.holiday::before{
-        content:""; position:absolute; inset:0; background:rgba(255,255,200,.35);
-      }
-      body.theme-light .day.holiday .date-label{ color:#b45309!important; }
-      body.theme-light .day.holiday .date-value{ color:#1f2937!important; }
-      body.theme-light .day.holiday .mt-3{ color:#f59e0b!important; }
     </style>
   </head>
   <body class="min-h-screen w-full bg-gradient text-slate-100 p-6">
@@ -186,10 +139,6 @@
 
       const allDays=range(START,END); let todayIso=formatDateInTZ(new Date(),TZ);
 
-      /* Theme */
-      let theme=localStorage.getItem('theme')||'dark';
-      function applyTheme(){ document.body.classList.toggle('theme-light', theme==='light'); }
-      applyTheme();
 
       /* ----- Local helpers (checks+notes zusammen) ----- */
       function readLocal(){
@@ -468,7 +417,6 @@ function dayCard(day, { disabled, checked, isLimit }) {
               <select id="tz-select" class="rounded-2xl px-3 py-2 bg-slate-800/60 hover:bg-slate-800 shadow-lg shadow-slate-900/40 border border-slate-700 text-slate-100">
                 <option value="Europe/Berlin">Deutschland</option>
               </select>
-              <button id="theme" class="rounded-2xl px-3 py-2 bg-slate-800/60 hover:bg-slate-800 shadow-lg shadow-slate-900/40 transition" title="Theme wechseln">🌙/☀️</button>
             </div>
           </header>
 
@@ -503,12 +451,6 @@ function dayCard(day, { disabled, checked, isLimit }) {
           tzSel.value = TZ;
           tzSel.addEventListener('change', (e)=> setTZ(e.target.value));
         }
-
-        document.getElementById('theme').addEventListener('click', ()=>{ 
-          theme = (theme==='light'?'dark':'light'); 
-          localStorage.setItem('theme',theme); 
-          applyTheme(); 
-        });
 
         $$('.day').forEach(el=>{
           el.addEventListener('click', ()=>{
