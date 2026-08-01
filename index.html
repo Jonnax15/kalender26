@@ -291,16 +291,14 @@ function dayCard(day, { disabled, checked, isLimit }) {
     day === "2026-08-02";
 
   const isHoliday =
-    (
-      day >= "2026-07-12" &&
-      day <= "2026-07-24"
-    );
+    day >= "2026-07-12" &&
+    day <= "2026-07-24";
 
- const isHoliday2 =
-    (
-      day >= "2026-07-27" &&
-      day <= "2026-07-31"
-    );
+  const isHoliday2 =
+    day >= "2026-07-27" &&
+    day <= "2026-07-31";
+
+  const hasHolidayDesign = isHoliday || isHoliday2;
 
   return `
     <button
@@ -312,100 +310,16 @@ function dayCard(day, { disabled, checked, isLimit }) {
             ? "hearts bg-pink-900/40 border-pink-500/60"
             : isHoliday
               ? "holiday"
-              : "bg-slate-900/60"
-        }
-        backdrop-blur shadow-xl
-        ${
-          checked
-            ? isSpecial
-              ? "border-pink-400/80"
-              : isHoliday
-                ? "border-yellow-300/60"
-                : "border-emerald-400/60"
-            : "border-slate-800"
-        }
-        ${
-          disabled
-            ? "opacity-60 cursor-not-allowed"
-            : "hover:-translate-y-0.5 hover:shadow-2xl"
-        }"
-    >
-      ${
-        isSpecial
-          ? '<div class="heart-bg"><span>❤</span></div>'
-          : ""
-      }
-
-      ${
-        isLimit
-          ? '<div class="pointer-events-none absolute inset-0 rounded-2xl ring-2 ring-emerald-400/60"></div>'
-          : ""
-      }
-
-      <div class="relative z-10 flex items-center justify-between">
-        <div>
-          <div class="text-xs date-label ${
-            isHoliday ? "text-yellow-100" : "text-slate-400"
-          }">
-            Datum
-          </div>
-
-          <div class="text-lg font-medium date-value ${
-            isHoliday ? "text-white" : ""
-          }">
-            ${display(day)}
-          </div>
-        </div>
-
-        <span class="inline-flex items-center justify-center h-8 w-8 rounded-xl border
-          ${
-            checked
-              ? isSpecial
-                ? "bg-pink-400/20 border-pink-400"
-                : isHoliday
-                  ? "bg-yellow-300/20 border-yellow-300"
-                  : "bg-emerald-400/20 border-emerald-400"
-              : "border-slate-700"
-          }"
-        >
-          ${checked ? (isSpecial ? heartIcon() : checkIcon()) : dot()}
-        </span>
-      </div>
-
-      ${
-        !disabled
-          ? `
-            <div class="mt-3 text-xs ${
-              isHoliday ? "text-yellow-100" : "text-emerald-300/80"
-            }">
-              Klicke zum Abhaken
-            </div>
-          `
-          : ""
-      }
-    </button>
-  `;
-}
-
-
- return `
-    <button
-      data-day="${day}"
-      data-disabled="${disabled}"
-      class="day relative rounded-2xl border p-4 text-left transition w-full
-        ${
-          isSpecial
-            ? "hearts bg-pink-900/40 border-pink-500/60"
-            : isHoliday2
-              ? "holiday"
-              : "bg-slate-900/60"
-        }
-        backdrop-blur shadow-xl
-        ${
-          checked
-            ? isSpecial
-              ? "border-pink-400/80"
               : isHoliday2
+                ? "holiday2"
+                : "bg-slate-900/60"
+        }
+        backdrop-blur shadow-xl
+        ${
+          checked
+            ? isSpecial
+              ? "border-pink-400/80"
+              : hasHolidayDesign
                 ? "border-yellow-300/60"
                 : "border-emerald-400/60"
             : "border-slate-800"
@@ -431,13 +345,13 @@ function dayCard(day, { disabled, checked, isLimit }) {
       <div class="relative z-10 flex items-center justify-between">
         <div>
           <div class="text-xs date-label ${
-            isHoliday2 ? "text-yellow-100" : "text-slate-400"
+            hasHolidayDesign ? "text-yellow-100" : "text-slate-400"
           }">
             Datum
           </div>
 
           <div class="text-lg font-medium date-value ${
-            isHoliday2 ? "text-white" : ""
+            hasHolidayDesign ? "text-white" : ""
           }">
             ${display(day)}
           </div>
@@ -448,7 +362,7 @@ function dayCard(day, { disabled, checked, isLimit }) {
             checked
               ? isSpecial
                 ? "bg-pink-400/20 border-pink-400"
-                : isHoliday2
+                : hasHolidayDesign
                   ? "bg-yellow-300/20 border-yellow-300"
                   : "bg-emerald-400/20 border-emerald-400"
               : "border-slate-700"
@@ -462,7 +376,7 @@ function dayCard(day, { disabled, checked, isLimit }) {
         !disabled
           ? `
             <div class="mt-3 text-xs ${
-              isHoliday2 ? "text-yellow-100" : "text-emerald-300/80"
+              hasHolidayDesign ? "text-yellow-100" : "text-emerald-300/80"
             }">
               Klicke zum Abhaken
             </div>
